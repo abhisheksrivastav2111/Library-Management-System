@@ -1,0 +1,93 @@
+<div class="container-fluid">
+  <div class="row flex-nowrap">
+    <%- include('../partials/admin-sidebar') %>
+    <div class="col py-3">
+      <div class="col overflow-auto h-100">
+        <div class="bg-light border rounded-3 p-3">
+          <h2 class="mb-3 display-4">Edit Book</h2>
+          <form method="POST" action="/admin/book?_method=PUT" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="<%= book.id %>">
+            <input type="hidden" name="oldISBN" value="<%= book.oldISBN || book.isbn %>">
+            <div class="mb-3">
+              <label for="isbn" class="form-label">ISBN</label>
+              <input type="text" class="form-control" id="isbn" name="isbn" value="<%= book.isbn %>" required>
+              <% if (typeof errors !== 'undefined') { %>
+                <% errors.forEach(err => { %>
+                  <% if (err.param === 'isbn') { %>
+                    <p class="text-danger fw-bold mb-0"><%= err.msg %></p>
+                  <% } %>
+                <% }) %>
+              <% } %>
+            </div>
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="title" name="title" value="<%= book.title %>" required >
+            </div>
+            <div class="mb-3">
+              <label for="author" class="form-label">Author</label>
+              <input type="text" class="form-control" name="author" value="<%= book.author %>" required>
+            </div>
+            <div class="mb-3">
+              <label for="publish_year" class="form-label">Publish Year</label>
+              <input type="text" class="form-control" name="publish_year" value="<%= book.publish_year %>" required>
+              <% if (typeof errors !== 'undefined') { %>
+                <% errors.forEach(err => { %>
+                  <% if (err.param === 'publish_year') { %>
+                    <p class="text-danger fw-bold mb-0"><%= err.msg %></p>
+                  <% } %>
+                <% }) %>
+              <% } %>
+            </div>
+            <div class="mb-3">
+              <label for="page_count" class="form-label">Page Count</label>
+              <input type="number" class="form-control" name="page_count" min="1" value="<%= book.page_count %>" required>
+            </div>
+            <div class="mb-3">
+              <label for="genre" class="form-label">Genre</label>
+              <select class="form-select" name="genre" required>
+                <option value="" disabled>Choose genre</option>
+                <option value="<%= book.genre %>" selected><%= book.genre %></option>
+                <% genres.filter(genre => genre !== book.genre).map(genre => { %>
+                  <option value="<%= genre %>"><%= genre %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" name="description" rows="5"><%= book.description %></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="stock" class="form-label">Stock</label>
+              <input type="number" class="form-control" name="stock" min="0" value="<%= book.stock %>" required>
+            </div>
+            <div class="mb-3">
+              <label for="image-preview" class="form-label">Image Preview</label><br>
+              <img class="image-preview" src="<%= book.coverImagePath %>" alt="image-preview" width="150" height="200">
+            </div>
+            <div class="mb-3">
+              <label for="cover_image" class="form-label">Cover Image</label>
+              <input class="form-control" type="file" id="cover_image" name="cover_image">
+            </div>
+            <div class="float-end mb-5">
+              <a href="/admin/book" class="btn btn-secondary">Back to book list</a>
+              <button type="submit" class="btn btn-primary" onsubmit="preventDefault()">Update Book</button>
+            </div>
+            <br>
+            <br>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const cover_image = document.querySelector('#cover_image')
+  const imagePreview = document.querySelector('.image-preview')
+
+  cover_image.addEventListener('change', () => {
+    const url = URL.createObjectURL(cover_image.files[0])
+    imagePreview.src = url
+    // console.log(url)
+  });
+</script>

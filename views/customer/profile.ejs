@@ -1,0 +1,28 @@
+<style>
+  .img-thumbnail {
+    transition: transform .2s;
+  }
+  .img-thumbnail:hover {
+    transform: scale(1.1);
+  }
+</style>
+
+<div class="display-3 text-center mt-3 mb-3">
+  Profile Data
+</div>
+<div class="container">
+  <div class="row">
+      <div class="col-md-8 mb-5 p-5 border border-5 rounded-circle mx-auto text-center">
+        <% if (msg.length !== 0) { %>
+          <div class="alert alert-info fw-bold rounded-pill col-md-3 mx-auto" role="alert">
+            <%= msg %>
+          </div>
+        <% } %>
+          <img src="<%= user.profilePicturePath %>" alt="<%= user.name %>" class="img-thumbnail rounded-circle mb-3" width="200">
+          <h1 class="display-4"><%= user.name %></h1>
+          <p class="lead fst-italic"><%= user.email %></p>
+          <p class="lead">Member since <%= new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'long', day: '2-digit'}).format(user.created_at) %></p>
+          <a href="/profile/edit" class="btn btn-outline-secondary border border-3" type="button"><span class="lead">Edit Profile</span></a>
+      </div>
+  </div>
+</div>

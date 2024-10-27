@@ -1,0 +1,111 @@
+<div class="container-fluid">
+  <div class="row flex-nowrap">
+    <%- include('../partials/admin-sidebar') %>
+    <div class="col py-3">
+      <div class="col overflow-auto h-100">
+        <div class="bg-light border rounded-3 p-3">
+          <h2 class="mb-3 display-4">Book Management</h2>
+          <a href="/admin/book/add" class="btn btn-primary mb-3">List a new book</a>
+          <% if (msg.length !== 0) { %>
+            <div class="alert alert-info fw-bold" role="alert">
+              <%= msg %>
+            </div>
+          <% } %>
+          <div class="row">
+            <div class="col-md-8">
+              <p class="mt-2">Total item: <%= totalBook || 0 %></p>
+            </div>
+            <div class="col-md-4">
+              <form action="/admin/book/1" method="GET" class="d-flex">
+                <input class="form-control me-2" type="text" name="search" value="<%= searchOption.search %>" placeholder="Search book title or ISBN...">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+            </div>
+          </div>
+          <div class="table-responsive-md">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Author</th>
+                  <th scope="col">Publish Year</th>
+                  <th scope="col">Genre</th>
+                  <th scope="col">Stock</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% let number = (currentPage - 1) * perPage %>
+                <% books.forEach((book) => { %>
+                  <tr>
+                    <th scope="row"><%= ++number %></th>
+                    <td><%= book.title %></td>
+                    <td><%= book.author %></td>
+                    <td><%= book.publish_year %></td>
+                    <td><%= book.genre %></td>
+                    <td><%= book.stock %></td>
+                    <td>
+                      <form action="/admin/book?_method=DELETE" method="POST" class="d-grid gap-2 d-md-block mb-0">
+                        <a href="/admin/book/detail/<%= book._id %>" class="btn btn-secondary badge">Detail</a>
+                        <a href="/admin/book/update/<%= book._id %>" class="btn btn-info badge">Update</a>
+                        <input type="hidden" name="book_id" value="<%= book._id %>" />
+                        <button type="submit" class="btn btn-danger badge" onclick="return confirm('Are you sure to delete this book?')">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <div>
+              <% if (totalPage > 0) { %>
+                <ul class="pagination justify-content-center mt-5">
+                  <% if (currentPage === 1) { %>
+                    <li class="page-item disabled">
+                      <a class="page-link">First</a>
+                    </li>
+                  <% } else { %>
+                    <li class="page-item">
+                      <a class="page-link" href="/admin/book/1?search=<%= searchOption.search %>">First</a>
+                    </li>
+                  <% } %>
+                  <% let i = (currentPage > 5 ? currentPage - 4 : 1) %>
+                  <% if (i !== 1) { %>
+                    <li class="page-item disabled">
+                      <a class="page-link">...</a>
+                    </li>
+                  <% } %>
+                  <% for (; i <= currentPage + 4 && i <= totalPage; i++) { %>
+                    <% if (i === currentPage) { %>
+                      <li class="page-item active">
+                        <a class="page-link"><%= i %></a>
+                      </li>
+                    <% } else { %>
+                      <li class="page-item">
+                        <a class="page-link" href="/admin/book/<%= i %>?search=<%= searchOption.search %>"><%= i %></a>
+                      </li>
+                    <% } %>
+                    <% if (i == currentPage + 4 && i < totalPage) { %>
+                      <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                      </li>
+                    <% } %>
+                  <% } %>
+                  <% if (currentPage === totalPage) { %>
+                    <li class="page-item disabled">
+                      <a class="page-link">Last</a>
+                    </li>
+                  <% } else { %>
+                    <li class="page-item">
+                      <a class="page-link" href="/admin/book/<%= totalPage %>?search=<%= searchOption.search %>">Last</a>
+                    </li>
+                  <% } %>
+                </ul>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

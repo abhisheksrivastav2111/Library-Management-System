@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="row d-flex justify-content-center">
+    <div class="col-10 col-sm-8 col-md-6 col-lg-5 m-5 p-4 bg-light border border-3">
+      <h2 class="text-center mb-4">Login</h2>
+      <form id="login_form">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="email" name="email" required autofocus>
+          <p class="email error"></p>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" name="password" required>
+          <p class="password error"></p>
+        </div>
+        <div class="d-grid gap-2 col-8 mt-5 mx-auto text-center">
+          <button type="submit" class="btn btn-primary">Login</button>
+          <div>Don't have an account? <a href="/register">Register now</a></div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form = document.querySelector('#login_form')
+  const emailError = document.querySelector('.email.error')
+  const passwordError = document.querySelector('.password.error')
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    emailError.textContent = ''
+    passwordError.textContent = ''
+
+    const email = form.email.value
+    const password = form.password.value
+
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+      const data = await res.json()
+      if (data.errors) {
+        emailError.textContent = data.errors.email
+        passwordError.textContent = data.errors.password
+      }
+      if (data.user) {
+        if (data.role === 0) {
+          location.assign('/admin')
+        }
+        else location.assign('/')
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  });
+</script>

@@ -1,0 +1,94 @@
+<div class="container-fluid">
+  <div class="row flex-nowrap">
+    <%- include('../partials/admin-sidebar') %>
+    <div class="col py-3">
+      <div class="col overflow-auto h-100">
+        <div class="bg-light border rounded-3 p-3">
+          <h2 class="mb-3 display-4">Add New Book</h2>
+          <form method="POST" action="/admin/book" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="isbn" class="form-label">ISBN</label>
+              <input type="text" class="form-control" id="isbn" name="isbn" required autofocus <% if (typeof isbn !== 'undefined') { %> value="<%= isbn %>" <% } %>>
+              <% if (typeof errors !== 'undefined') { %>
+                <% errors.forEach(err => { %>
+                  <% if (err.param === 'isbn') { %>
+                    <p class="text-danger fw-bold mb-0"><%= err.msg %></p>
+                  <% } %>
+                <% }) %>
+              <% } %>
+            </div>
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="title" name="title" required <% if (typeof title !== 'undefined') { %> value="<%= title %>" <% } %>>
+            </div>
+            <div class="mb-3">
+              <label for="author" class="form-label">Author</label>
+              <input type="text" class="form-control" name="author" required <% if (typeof author !== 'undefined') { %> value="<%= author %>" <% } %>>
+            </div>
+            <div class="mb-3">
+              <label for="publish_year" class="form-label">Publish Year</label>
+              <input type="text" class="form-control" name="publish_year" required <% if (typeof publish_year !== 'undefined') { %> value="<%= publish_year %>" <% } %>>
+              <% if (typeof errors !== 'undefined') { %>
+                <% errors.forEach(err => { %>
+                  <% if (err.param === 'publish_year') { %>
+                    <p class="text-danger fw-bold mb-0"><%= err.msg %></p>
+                  <% } %>
+                <% }) %>
+              <% } %>
+            </div>
+            <div class="mb-3">
+              <label for="page_count" class="form-label">Page Count</label>
+              <input type="number" class="form-control" name="page_count" min="1" required <% if (typeof page_count !== 'undefined') { %> value="<%= page_count %>" <% } %>>
+            </div>
+            <div class="mb-3">
+              <label for="genre" class="form-label">Genre</label>
+              <select class="form-select" name="genre" required>
+                <option selected value="" disabled>Choose genre</option>
+                <% genres.forEach(genre => { %>
+                  <option value="<%= genre %>"><%= genre %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" name="description" rows="5"><% if (typeof description !== 'undefined') { %><%= description %><% } %></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="stock" class="form-label">Stock</label>
+              <input type="number" class="form-control" name="stock" min="0" required <% if (typeof stock !== 'undefined') { %> value="<%= stock %>" <% } %>>
+            </div>
+            <div class="image-preview-wrapper">
+              <img class="image-preview">
+            </div>
+            <div class="mb-3">
+              <label for="cover_image" class="form-label">Cover Image</label>
+              <input class="form-control" type="file" id="cover_image" name="cover_image" required>
+            </div>
+            <div class="float-end mb-5">
+              <a href="/admin/book" class="btn btn-secondary">Back to book list</a>
+              <button type="submit" class="btn btn-primary" onsubmit="preventDefault()">Add Book</button>
+            </div>
+            <br>
+            <br>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const cover_image = document.querySelector('#cover_image')
+  const imagePreviewWrapper = document.querySelector('.image-preview-wrapper')
+  const imagePreview = document.querySelector('.image-preview')
+
+  cover_image.addEventListener('change', () => {
+    const url = URL.createObjectURL(cover_image.files[0])
+    imagePreviewWrapper.classList.add("mb-3")
+    imagePreviewWrapper.innerHTML = `
+      <label for="image-preview" class="form-label">Image Preview</label>
+      <br>
+      <img class="image-preview" src=${url} alt="image preview" width="150" height="200">
+    `
+  });
+</script>
